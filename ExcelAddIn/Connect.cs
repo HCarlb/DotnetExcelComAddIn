@@ -17,7 +17,7 @@ namespace HcExcelAddIn;
 [ComVisible(true)]
 [Guid(ContractGuids.Guid)]
 [ProgId(ContractGuids.ProgId)]
-public class Connect : IDTExtensibility2 , IRibbonExtensibility //, ICustomTaskPaneConsumer
+public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPaneConsumer
 {
     private readonly string _ribbonName = "Ribbon.xml";
     private Application? _xlApp;
@@ -128,10 +128,12 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility //, ICustomTaskP
         return GetEmbeddedResource(resourceName);
     }
 
-    //public void CTPFactoryAvailable(ICTPFactory CTPFactoryInst)
-    //{
-    //   // SidePanelManager.Initialize(CTPFactoryInst);
-    //}
+    public void CTPFactoryAvailable(ICTPFactory CTPFactoryInst)
+    {
+        // This method is called when the CTP factory is available.
+        // CPT factory is used to create custom task panes.
+        Log.Information("CTPFactory available.");
+    }
 
     public void OnRibbonLoaded(IRibbonUI ribbonUI)
     {
@@ -140,7 +142,6 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility //, ICustomTaskP
         Log.Information("Ribbon loaded.");
 
         _ = ribbonUI;   // To discard the warning about unused variable.
-
     }
     
     public void OnButtonClick(IRibbonControl control)
@@ -148,5 +149,12 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility //, ICustomTaskP
         // This method is called when the button is clicked.
         // You can perform any necessary actions here.
         Log.Information($"Button clicked: {control.Id}");
+        if (_xlApp is null)
+        {
+            Log.Error("Application object is not initialized.");
+            return;
+        }
+
+        _xlApp.ActiveSheet.Cells[1, 2].Value = $"Button [{control.Id}] was Clicked";
     }
 }
