@@ -8,7 +8,7 @@ namespace HcExcelAddIn;
 [ComVisible(true)]
 [Guid(ContractGuids.Guid)]
 [ProgId(ContractGuids.ProgId)]
-public class Connect : IDTExtensibility2, IConnect
+public class Connect : IDTExtensibility2
 {
     //[Guid(ContractGuids.AddInGuid)]
     private Application? _app;
