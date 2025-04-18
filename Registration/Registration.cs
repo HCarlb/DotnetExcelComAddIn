@@ -14,6 +14,8 @@ internal class Registration
 
     internal static void RegisterAddIn()
     {
+        if(!File.Exists(_addinPath)) throw new FileNotFoundException($"Add-in path does not exist: {_addinPath}");
+
         RegisterComClass();
         RegisterComClassStep2();
         RegisterExcelAddIn();
@@ -41,11 +43,11 @@ internal class Registration
 
     private static void RegisterComClassStep2()
     {
-        Console.WriteLine($"Registering COM class with ProgId: {ContractGuids.ProgId}");    
+        Console.WriteLine($"Registering Step2 COM class with ProgId: {ContractGuids.ProgId}");    
         using RegistryKey key = Registry.ClassesRoot.CreateSubKey(ContractGuids.ProgId);
         key.SetValue(null, ContractGuids.ProgId);
 
-        Console.WriteLine($"Registering COM class with CLSID: {ContractGuids.Guid}");
+        Console.WriteLine($"Registeringg Step2 COM class with CLSID: {ContractGuids.Guid}");
         using var clsidKey = key.CreateSubKey("CLSID");
         clsidKey.SetValue(null, $"{{{ContractGuids.Guid}}}"); // Set the CLSID value
     }
@@ -61,16 +63,19 @@ internal class Registration
 
     private static void UnregisterComClass()
     {
+        Console.WriteLine($"Unregistering COM class with CLSID: {_clsidKey}");
         Registry.ClassesRoot.DeleteSubKeyTree(_clsidKey, false);
     }
 
     private static void UnregisterComClassStep2()
     {
+        Console.WriteLine($"Unregistering COM class with ProgId: {ContractGuids.ProgId}");
         Registry.ClassesRoot.DeleteSubKeyTree(ContractGuids.ProgId, false);
     }
 
     private static void UnregisterExcelAddIn()
     {
+        Console.WriteLine($"Unregistering Excel Add-In Key: {_addinKey}");
         Registry.LocalMachine.DeleteSubKeyTree(_addinKey, false);
     }
 }
