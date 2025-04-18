@@ -133,7 +133,7 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility //, ICustomTaskP
     //   // SidePanelManager.Initialize(CTPFactoryInst);
     //}
 
-    public void OnRibbonLoad(IRibbonUI ribbonUI)
+    public void OnRibbonLoaded(IRibbonUI ribbonUI)
     {
         // This method is called when the ribbon is loaded from onLoad="OnRibbonLoad" in the xml ribbon.
         // You can perform any necessary initialization here.
