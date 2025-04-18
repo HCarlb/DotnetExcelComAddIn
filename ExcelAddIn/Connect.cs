@@ -1,15 +1,13 @@
-﻿using COMContract;
-using Extensibility;
+﻿using Extensibility;
 using Microsoft.Office.Core;
 using Microsoft.Office.Interop.Excel;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using stdole;
-using Serilog;
 
 // Project references required:
 // Nuget Packages: stdole (from Microsoft)
 // COM-reference: Interop.Microsoft.Office.Interop.Excel from Microsoft Excel 16.0 Object Library
+// COM-reference: Microsoft.Office.Core from Microsoft Office 16.0 Object Library
 
 
 namespace HcExcelAddIn;
@@ -20,6 +18,7 @@ namespace HcExcelAddIn;
 public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPaneConsumer
 {
     private readonly string _ribbonName = "Ribbon.xml";
+    private readonly string _ribbonPath = "Ribbons";
     private Application? _xlApp;
 
     /* 
@@ -85,8 +84,7 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
 
         Log.Information("Greeting the user with Hello World!");
         _xlApp.ActiveSheet.Cells[1, 1].Value = "Hello, World!";
-
-
+        
         Log.Information("Add-in has finished loading.");
     }
 
@@ -97,35 +95,16 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
         Log.Information("Add-in has been updated.");
     }
 
-    
-    private static string GetEmbeddedResource(string resourceName)
-    {
-        // Utility to retrieve the embedded resource as a string
-
-        Log.Information($"Loading embedded resource: {resourceName}");
-        using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
-        if (stream == null)
-        {
-            Log.Error($"Resource '{resourceName}' not found.");
-           return string.Empty;    
-        }
-
-        Log.Information($"Resource '{resourceName}' found.");
-        using var reader = new StreamReader(stream);
-        return reader.ReadToEnd();
-    }
-    
-    private static string GetRibbonResourceName(string name)
-    {   
-        var assembly = Assembly.GetExecutingAssembly();
-        var resourceNames = assembly.GetManifestResourceNames();
-        return resourceNames.Single(str => str.EndsWith(name));
-    }
+    //private static string GetRibbonResourceName(string name)
+    //{   
+    //    var assembly = Assembly.GetExecutingAssembly();
+    //    var resourceNames = assembly.GetManifestResourceNames();
+    //    return resourceNames.Single(str => str.EndsWith(name));
+    //}
 
     public string GetCustomUI(string RibbonID)
     {
-        var resourceName = GetRibbonResourceName(_ribbonName);
-        return GetEmbeddedResource(resourceName);
+        return RibbonExtensions.GetRibbonXML( _ribbonName, _ribbonPath);  
     }
 
     public void CTPFactoryAvailable(ICTPFactory CTPFactoryInst)

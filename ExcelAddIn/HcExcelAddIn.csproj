@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Ribbon.xml" />
+    <EmbeddedResource Include="Ribbons\Ribbon.xml" />
   </ItemGroup>
 
   <ItemGroup>
