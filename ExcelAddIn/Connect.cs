@@ -1,6 +1,6 @@
 ﻿using COMContract;
 using Extensibility;
-//using Microsoft.Office.Core;
+using Microsoft.Office.Core;
 using Microsoft.Office.Interop.Excel;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -17,8 +17,9 @@ namespace HcExcelAddIn;
 [ComVisible(true)]
 [Guid(ContractGuids.Guid)]
 [ProgId(ContractGuids.ProgId)]
-public class Connect : IDTExtensibility2 //, IRibbonExtensibility //, ICustomTaskPaneConsumer
+public class Connect : IDTExtensibility2 , IRibbonExtensibility //, ICustomTaskPaneConsumer
 {
+    private readonly string _ribbonName = "Ribbon.xml";
     private Application? _xlApp;
 
     /* 
@@ -47,7 +48,7 @@ public class Connect : IDTExtensibility2 //, IRibbonExtensibility //, ICustomTas
 
     public void OnBeginShutdown(ref Array custom)
     {
-        //Log.Information("Add-in is being unloaded.");
+        Log.Information("Add-in is being unloaded.");
         // This method is called when the add-in is being unloaded.
         // You can perform any necessary cleanup here.
 
@@ -96,22 +97,56 @@ public class Connect : IDTExtensibility2 //, IRibbonExtensibility //, ICustomTas
         Log.Information("Add-in has been updated.");
     }
 
-     // Utility to retrieve the embedded resource as a string
-    //private static string GetEmbeddedResource(string resourceName)
-    //{
-    //    //Log.Information($"Loading embedded resource: {resourceName}");
-    //    using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException($"Resource '{resourceName}' not found.");
-    //    using var reader = new StreamReader(stream);
-    //    return reader.ReadToEnd();
-    //}
+    
+    private static string GetEmbeddedResource(string resourceName)
+    {
+        // Utility to retrieve the embedded resource as a string
 
-    //public string GetCustomUI(string RibbonID)
-    //{
-    //    return GetEmbeddedResource("Ribbon.xml");
-    //}
+        Log.Information($"Loading embedded resource: {resourceName}");
+        using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
+        if (stream == null)
+        {
+            Log.Error($"Resource '{resourceName}' not found.");
+           return string.Empty;    
+        }
+
+        Log.Information($"Resource '{resourceName}' found.");
+        using var reader = new StreamReader(stream);
+        return reader.ReadToEnd();
+    }
+    
+    private static string GetRibbonResourceName(string name)
+    {   
+        var assembly = Assembly.GetExecutingAssembly();
+        var resourceNames = assembly.GetManifestResourceNames();
+        return resourceNames.Single(str => str.EndsWith(name));
+    }
+
+    public string GetCustomUI(string RibbonID)
+    {
+        var resourceName = GetRibbonResourceName(_ribbonName);
+        return GetEmbeddedResource(resourceName);
+    }
 
     //public void CTPFactoryAvailable(ICTPFactory CTPFactoryInst)
     //{
     //   // SidePanelManager.Initialize(CTPFactoryInst);
     //}
+
+    public void OnRibbonLoad(IRibbonUI ribbonUI)
+    {
+        // This method is called when the ribbon is loaded from onLoad="OnRibbonLoad" in the xml ribbon.
+        // You can perform any necessary initialization here.
+        Log.Information("Ribbon loaded.");
+
+        _ = ribbonUI;   // To discard the warning about unused variable.
+
+    }
+    
+    public void OnButtonClick(IRibbonControl control)
+    {   
+        // This method is called when the button is clicked.
+        // You can perform any necessary actions here.
+        Log.Information($"Button clicked: {control.Id}");
+    }
 }
