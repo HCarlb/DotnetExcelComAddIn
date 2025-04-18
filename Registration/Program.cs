@@ -11,10 +11,21 @@ if (args.Length > 0)
                 Registration.UnregisterAddIn();
                 break;
 
+            case "/?":
+                Console.WriteLine("Usage: Register.exe [/u] [/h]");
+                Console.WriteLine("  'Register.exe' to register addin");
+                Console.WriteLine("  'Register.exe /u' to unregister addin");
+                break;
+
             default:
                 PrintMessage("Invalid argument. Use /u to unregister the add-in.", MessageSeverity.Warning);
                 break;
         }
+    }
+    catch (UnauthorizedAccessException ex)
+    {
+        PrintMessage($"Access denied: {ex.Message}", MessageSeverity.Error);
+        PrintMessage("Please run the application as an administrator.", MessageSeverity.Warning);
     }
     catch (Exception ex)
     {
@@ -27,6 +38,15 @@ else
     try
     {
         Registration.RegisterAddIn();
+    }
+    catch(FileNotFoundException ex)
+    {
+        PrintMessage($"File not found: {ex.Message}", MessageSeverity.Error);
+    }
+    catch (UnauthorizedAccessException ex)
+    {
+        PrintMessage($"Access denied: {ex.Message}", MessageSeverity.Error);
+        PrintMessage("Please run the application as an administrator.", MessageSeverity.Warning);
     }
     catch (Exception ex)
     {
