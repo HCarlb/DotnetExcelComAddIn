@@ -20,15 +20,15 @@ internal static class RibbonExtensions
     {
         // Utility to retrieve the embedded resource as a string
 
-        Log.Information($"Loading embedded resource: {resourceName}");
+        Log.Debug($"Loading embedded resource: {resourceName}");
         using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
         if (stream == null)
         {
-            Log.Error($"Resource '{resourceName}' not found.");
+            Log.Error("Resource '{0}' not found.", resourceName);
             return string.Empty;
         }
 
-        Log.Information($"Resource '{resourceName}' found.");
+        Log.Debug("Resource '{0}' found.", resourceName);
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd();
     }

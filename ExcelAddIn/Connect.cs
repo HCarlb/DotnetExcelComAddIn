@@ -34,15 +34,55 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
 
     private static void ConfigureLogger()
     {
+
+        //Log.Logger = new LoggerConfiguration()
+        //    .MinimumLevel.Debug()
+        //    .Enrich.WithProperty("AddIn", ContractGuids.ProgId)
+        //    .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Day)
+        //    .CreateLogger();
+
+#if DEBUG
         var folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? $"{ContractGuids.ProgId}_logs";
-        var path = Path.Combine(folder, "log-.txt" );
+        var logFilePath = Path.Combine(folder, "debuglog-.txt" );
 
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
-            .WriteTo.File(path, rollingInterval: RollingInterval.Day)
+            .MinimumLevel.Debug() // Change to Information or Warning in production
+            .Enrich.FromLogContext()
+            .Enrich.WithEnvironmentUserName()
+            .Enrich.WithMachineName()
+            .Enrich.WithProcessId()
+            .Enrich.WithThreadId()
+            .WriteTo.File(
+                path: logFilePath,
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj} {Properties}{NewLine}{Exception}",
+                rollingInterval: RollingInterval.Day,
+                restrictedToMinimumLevel: LogEventLevel.Debug, 
+                retainedFileCountLimit: 3 // Keep logs for last 3 days
+            )
             .CreateLogger();
+#elif !DEBUG
 
-        Log.Information("Logger configured.");
+        var folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? $"{ContractGuids.ProgId}_logs";
+        var logFilePath = Path.Combine(folder, "log-.txt");
+
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Information() // Change to Information or Warning in production
+            .Enrich.FromLogContext()
+            .Enrich.WithEnvironmentUserName()
+            .Enrich.WithMachineName()
+            .Enrich.WithProcessId()
+            .Enrich.WithThreadId()
+            .WriteTo.File(
+                path: logFilePath,
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj} {Properties}{NewLine}{Exception}",
+                rollingInterval: RollingInterval.Day,
+                restrictedToMinimumLevel: LogEventLevel.Information, 
+                retainedFileCountLimit: 14 // Keep logs for last 14 days
+            )
+            .CreateLogger();
+#endif
+
+        Log.Debug("Logger configured.");
     }
 
     public void OnBeginShutdown(ref Array custom)
@@ -69,7 +109,7 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
     {
         // This method is called when the add-in is unloaded.
         // You can perform any necessary cleanup here.
-        Log.Information("Add-in is being unloaded.");
+        Log.Debug("Add-in is being unloaded.");
     }
 
     public void OnStartupComplete(ref Array custom)
@@ -82,7 +122,7 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
             return;
         }
 
-        Log.Information("Greeting the user with Hello World!");
+        Log.Debug("Greeting the user with Hello World!");
         _xlApp.ActiveSheet.Cells[1, 1].Value = "Hello, World!";
         
         Log.Information("Add-in has finished loading.");
@@ -92,7 +132,7 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
     {
         // This method is called when the add-in is updated.
         // You can perform any necessary updates here.
-        Log.Information("Add-in has been updated.");
+        Log.Debug("Add-in has been updated.");
     }
 
     //private static string GetRibbonResourceName(string name)
@@ -104,21 +144,29 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
 
     public string GetCustomUI(string RibbonID)
     {
-        return RibbonExtensions.GetRibbonXML( _ribbonName, _ribbonPath);  
+        try
+        {
+            return RibbonExtensions.GetRibbonXML(_ribbonName, _ribbonPath);
+        }
+        catch (Exception ex)
+        {
+            Log.Error("Error loading ribbon XML: {0}", ex.Message);
+            return string.Empty;
+        }
     }
 
     public void CTPFactoryAvailable(ICTPFactory CTPFactoryInst)
     {
         // This method is called when the CTP factory is available.
         // CPT factory is used to create custom task panes.
-        Log.Information("CTPFactory available.");
+        Log.Debug("CTPFactory available.");
     }
 
     public void OnRibbonLoaded(IRibbonUI ribbonUI)
     {
         // This method is called when the ribbon is loaded from onLoad="OnRibbonLoad" in the xml ribbon.
         // You can perform any necessary initialization here.
-        Log.Information("Ribbon loaded.");
+        Log.Debug("Ribbon loaded.");
 
         _ = ribbonUI;   // To discard the warning about unused variable.
     }
@@ -127,7 +175,7 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
     {   
         // This method is called when the button is clicked.
         // You can perform any necessary actions here.
-        Log.Information($"Button clicked: {control.Id}");
+        Log.Debug("Button clicked: {0}", control.Id);
         if (_xlApp is null)
         {
             Log.Error("Application object is not initialized.");
