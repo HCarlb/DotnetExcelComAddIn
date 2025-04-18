@@ -47,7 +47,7 @@ internal class Registration
         using RegistryKey key = Registry.ClassesRoot.CreateSubKey(ContractGuids.ProgId);
         key.SetValue(null, ContractGuids.ProgId);
 
-        Console.WriteLine($"Registeringg Step2 COM class with CLSID: {ContractGuids.Guid}");
+        Console.WriteLine($"Registering Step2 COM class with CLSID: {ContractGuids.Guid}");
         using var clsidKey = key.CreateSubKey("CLSID");
         clsidKey.SetValue(null, $"{{{ContractGuids.Guid}}}"); // Set the CLSID value
     }
