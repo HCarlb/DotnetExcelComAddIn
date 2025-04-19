@@ -4,7 +4,7 @@
 		<tabs>
 			<tab id="hcCustomTab" label="HcAddin">
 				<group id="group1" label="Phun Stuff">
-					<button id="button1" label="Click Me" onAction="OnButtonClick" />
+					<button id="button1" label="Click Me" onAction="OnAction" />
 				</group>
 			</tab>
 		</tabs>
