@@ -1,8 +1,8 @@
 ﻿using Extensibility;
 using Microsoft.Office.Core;
 using Microsoft.Office.Interop.Excel;
-using System.Reflection;
 using System.Runtime.InteropServices;
+using XlApplication = Microsoft.Office.Interop.Excel.Application;
 
 // Project references required:
 // Nuget Packages: stdole (from Microsoft)
@@ -19,7 +19,7 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
 {
     private readonly string _ribbonName = "Ribbon.xml";
     private readonly string _ribbonPath = "Ribbons";
-    private Application? _xlApp;
+    private XlApplication? _xlApp;
 
     /* 
      * ################################################################################################################################
@@ -27,63 +27,10 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
      * Connect() 
      * { 
      *      // Warning!!!! The constructor seem to make the addon not load in Excel.
-     *      // Do not use!!!!!
+     *      // Do not use(for now)!!!!! 
      * }  
      * ################################################################################################################################
     */
-
-    private static void ConfigureLogger()
-    {
-
-        //Log.Logger = new LoggerConfiguration()
-        //    .MinimumLevel.Debug()
-        //    .Enrich.WithProperty("AddIn", ContractGuids.ProgId)
-        //    .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Day)
-        //    .CreateLogger();
-
-#if DEBUG
-        var folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? $"{ContractGuids.ProgId}_logs";
-        var logFilePath = Path.Combine(folder, "debuglog-.txt" );
-
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug() // Change to Information or Warning in production
-            .Enrich.FromLogContext()
-            .Enrich.WithEnvironmentUserName()
-            .Enrich.WithMachineName()
-            .Enrich.WithProcessId()
-            .Enrich.WithThreadId()
-            .WriteTo.File(
-                path: logFilePath,
-                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj} {Properties}{NewLine}{Exception}",
-                rollingInterval: RollingInterval.Day,
-                restrictedToMinimumLevel: LogEventLevel.Debug, 
-                retainedFileCountLimit: 3 // Keep logs for last 3 days
-            )
-            .CreateLogger();
-#elif !DEBUG
-
-        var folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? $"{ContractGuids.ProgId}_logs";
-        var logFilePath = Path.Combine(folder, "log-.txt");
-
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Information() // Change to Information or Warning in production
-            .Enrich.FromLogContext()
-            .Enrich.WithEnvironmentUserName()
-            .Enrich.WithMachineName()
-            .Enrich.WithProcessId()
-            .Enrich.WithThreadId()
-            .WriteTo.File(
-                path: logFilePath,
-                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj} {Properties}{NewLine}{Exception}",
-                rollingInterval: RollingInterval.Day,
-                restrictedToMinimumLevel: LogEventLevel.Information, 
-                retainedFileCountLimit: 14 // Keep logs for last 14 days
-            )
-            .CreateLogger();
-#endif
-
-        Log.Debug("Logger configured.");
-    }
 
     public void OnBeginShutdown(ref Array custom)
     {
@@ -96,13 +43,14 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
 
     public void OnConnection(object application, ext_ConnectMode connectMode, object addInInst, ref Array custom)
     {
-        // This method is called when the add-in is loaded.
-        // You can perform any initialization here.
+        // Setup Logging
+        Log.Logger = Configuration.ConfigureLogger();
         Log.Information("Add-in is being loaded.");
 
-        ConfigureLogger();
+        // This method is called when the add-in is loaded.
+        // You can perform any initialization here.
 
-        _xlApp = application as Application;
+        _xlApp = application as XlApplication;
     }
 
     public void OnDisconnection(ext_DisconnectMode removeMode, ref Array custom)
@@ -134,13 +82,6 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
         // You can perform any necessary updates here.
         Log.Debug("Add-in has been updated.");
     }
-
-    //private static string GetRibbonResourceName(string name)
-    //{   
-    //    var assembly = Assembly.GetExecutingAssembly();
-    //    var resourceNames = assembly.GetManifestResourceNames();
-    //    return resourceNames.Single(str => str.EndsWith(name));
-    //}
 
     public string GetCustomUI(string RibbonID)
     {
@@ -183,5 +124,7 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
         }
 
         _xlApp.ActiveSheet.Cells[1, 2].Value = $"Button [{control.Id}] was Clicked";
+
+        MessageBox.Show($"Button [{control.Id}] was Clicked", "Button Clicked", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 }

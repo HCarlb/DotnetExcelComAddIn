@@ -6,7 +6,7 @@
 /// </summary>
 public static class ContractGuids
 {
-    // This is the GUID for the COM Add-in. It must be unique and should not be changed.
+    // This is the ProgId for the COM Add-in. It must be unique and should not be changed.
     // AppName.ClassName
     public const string ProgId = "HcExcelAddIn.Connect";
 
