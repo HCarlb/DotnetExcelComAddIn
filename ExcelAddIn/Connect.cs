@@ -62,7 +62,7 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
         Log.Debug("Add-in is being unloaded.");
 
         // Clean up
-        _ribbonController?.Dispose();
+        if (_ribbonController is IDisposable d) d.Dispose();
         _ribbonController = null;
         _xlApp = null;
     }
