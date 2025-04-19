@@ -1,13 +1,14 @@
 # Excel COM Add-in (.NET)
 
-A COM Add-in for Microsoft Excel built with .NET. 
+A template COM Add-in for Microsoft Excel built with .NET. 
+Built for fun, just to see if it was possible. :)
 
 ## 📦 Features
 
 - Registration and unregistration with windows registry
 - Seamless integration with Microsoft Excel
 - Custom Ribbon tabs and buttons
-- Built-in logging and error handling
+- Built-in logging with Serilog
 
 ## 🛠️ Technologies
 
@@ -19,7 +20,7 @@ A COM Add-in for Microsoft Excel built with .NET.
 
 ### Prerequisites
 
-- Windows OS
+- Windows OS (10 or later)
 - Microsoft Excel (2016 or later recommended)
 - [.NET SDK](https://dotnet.microsoft.com/download)
 - [Visual Studio](https://visualstudio.microsoft.com/) with "Office/SharePoint development" workload
