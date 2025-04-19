@@ -2,6 +2,14 @@
 using System.Security.Principal;
 using COMContract;
 
+
+/// This program registers or unregisters the COM add-in in the Windows registry
+/// by creating the necessary registry keys and values.
+/// It adds keys in both the HKEY_CLASSES_ROOT and HKEY_LOCAL_MACHINE hives.
+
+
+
+
 const string progId = ContractGuids.ProgId; //"MyCompany.MyExcelAddin";
 const string clsid = $"{{{ContractGuids.Guid}}}";
 const string friendlyName = ContractGuids.FriendlyName; //"My Excel Add-in";
@@ -59,13 +67,13 @@ void RegisterInClassesRoot()
     if (!File.Exists(dllPath)) throw new FileNotFoundException($"DLL not found: {dllPath}");
 
     using var progIdKey = Registry.ClassesRoot.CreateSubKey(progId);
-    progIdKey?.SetValue(string.Empty, friendlyName);
+    progIdKey?.SetValue(string.Empty, progId);
 
     using var clsidSubKey = progIdKey?.CreateSubKey("CLSID");
     clsidSubKey?.SetValue(string.Empty, clsid);
 
     using var clsidKey = Registry.ClassesRoot.CreateSubKey($@"CLSID\{clsid}");
-    clsidKey?.SetValue(string.Empty, friendlyName);
+    clsidKey?.SetValue(string.Empty, progId);
 
     using var inprocKey = clsidKey?.CreateSubKey("InprocServer32");
     inprocKey?.SetValue(string.Empty, dllPath); // Path to comhost.dll
@@ -76,7 +84,7 @@ void RegisterInClassesRoot()
 void RegisterInLocalMachine()
 {
     using var addinKey = Registry.LocalMachine.CreateSubKey($@"{officeAddinsBase}\{progId}");
-    addinKey?.SetValue("Description", friendlyName);
+    addinKey?.SetValue("Description", progId);
     addinKey?.SetValue("FriendlyName", friendlyName);
     addinKey?.SetValue("LoadBehavior", 3, RegistryValueKind.DWord);
 }

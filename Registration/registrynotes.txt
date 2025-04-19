@@ -1,0 +1,20 @@
+﻿Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\HcExcelAddIn.Connect]
+@="HcExcelAddIn.Connect"
+
+[HKEY_CLASSES_ROOT\HcExcelAddIn.Connect\CLSID]
+@="{75CDAAAE-EF6C-4433-A059-F1FA2ED46F47}"
+
+[HKEY_CLASSES_ROOT\CLSID\{75CDAAAE-EF6C-4433-A059-F1FA2ED46F47}]
+@="HcExcelAddIn.Connect"
+
+[HKEY_CLASSES_ROOT\CLSID\{75CDAAAE-EF6C-4433-A059-F1FA2ED46F47}\InprocServer32]
+@="C:\\path_to_addin\\HcExcelAddIn.comhost.dll"
+"ThreadingModel"="Both"
+"ProgID"="HcExcelAddIn.Connect"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Office\Excel\AddIns\HcExcelAddIn.Connect]
+"Description"="HcExcelAddIn.Connect"
+"FriendlyName"="HcExcel Addin. This will be visible in Excel."
+"LoadBehavior"=dword:00000003
