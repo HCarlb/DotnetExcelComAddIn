@@ -4,7 +4,7 @@ A COM Add-in for Microsoft Excel built with .NET.
 
 ## 📦 Features
 
-- Registration and unregistrationwith windows registry
+- Registration and unregistration with windows registry
 - Seamless integration with Microsoft Excel
 - Custom Ribbon tabs and buttons
 - Built-in logging and error handling
