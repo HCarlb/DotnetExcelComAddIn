@@ -13,7 +13,6 @@ Built for fun, just to see if it was possible. :)
 ## 🛠️ Technologies
 
 - .NET 8+ (works on dotnet 9 and 10)
-- Visual Studio Tools for Office (VSTO)
 - Microsoft Office Interop Libraries
 
 ## 🚀 Getting Started
