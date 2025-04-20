@@ -49,6 +49,13 @@ internal sealed class RibbonController(XlApplication xlApp, string ribbonName) :
         Log.Debug("RibbonController for {0} disposed.", _ribbonName);
     }
 
+    /// <summary>
+    /// Gets the full name of the embedded resource for the ribbon.
+    /// Ex. AppName.Folder.Ribbon.xml
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="resourcePath"></param>
+    /// <returns></returns>
     private static string GetRibbonResourceName(string name, string resourcePath)
     {
         var assembly = Assembly.GetExecutingAssembly();
@@ -56,10 +63,13 @@ internal sealed class RibbonController(XlApplication xlApp, string ribbonName) :
         return resourceNames.Single(str => str.EndsWith(name) && str.Contains(resourcePath));
     }
 
+    /// <summary>
+    /// Gets the embedded resource as a string.
+    /// </summary>
+    /// <param name="resourceName"></param>
+    /// <returns></returns>
     private static string GetEmbeddedResource(string resourceName)
     {
-        // Utility to retrieve the embedded resource as a string
-
         Log.Debug("Loading embedded resource: {0}", resourceName);
         using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
         if (stream == null)
