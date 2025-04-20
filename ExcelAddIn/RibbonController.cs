@@ -1,6 +1,5 @@
 ﻿using Microsoft.Office.Core;
 using System.Reflection;
-using XlApplication = Microsoft.Office.Interop.Excel.Application;
 
 namespace HcExcelAddIn;
 
@@ -31,9 +30,13 @@ internal sealed class RibbonController(XlApplication xlApp, string ribbonName) :
         switch (control.Id)
         {
             case "button1":
-                //MessageBox.Show("Button 1 clicked!", "Ribbon Button Clicked", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                var x = new MainView();
-                x.Show();
+                // WinForms MessageBox example
+                MessageBox.Show("Button 1 clicked!", "Ribbon Button Clicked", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                break;
+            case "button2":
+                // WPF Window example
+                var w = new MainView();
+                w.Show();
                 break;
             default:
                 Log.Warning("Unknown control ID: {0}", control.Id);
