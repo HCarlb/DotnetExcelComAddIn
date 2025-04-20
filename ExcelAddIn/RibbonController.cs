@@ -4,7 +4,7 @@ using XlApplication = Microsoft.Office.Interop.Excel.Application;
 
 namespace HcExcelAddIn;
 
-public sealed class RibbonController(XlApplication xlApp, string ribbonName) : IRibbonExtensibility, IDisposable
+internal sealed class RibbonController(XlApplication xlApp, string ribbonName) : IRibbonExtensibility, IDisposable
 {
     private readonly XlApplication _xlApp = xlApp;
     private readonly string _ribbonName = ribbonName;
