@@ -4,7 +4,8 @@
 		<tabs>
 			<tab id="hcCustomTab" label="HcAddin">
 				<group id="group1" label="Phun Stuff">
-					<button id="button1" label="Click Me" onAction="OnAction" />
+					<button id="button1" label="Greet Me" onAction="OnAction" />
+					<button id="button2" label="Open WPF Window" onAction="OnAction" />
 				</group>
 			</tab>
 		</tabs>

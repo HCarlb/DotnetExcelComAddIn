@@ -2,7 +2,7 @@
 using Microsoft.Office.Core;
 using Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
-using XlApplication = Microsoft.Office.Interop.Excel.Application;
+using ExcelApplication = Microsoft.Office.Interop.Excel.Application;
 
 // Project references required:
 // Nuget Packages: stdole (from Microsoft)
@@ -17,9 +17,7 @@ namespace HcExcelAddIn;
 [ProgId(ContractGuids.ProgId)]
 public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPaneConsumer
 {
-    private readonly string _ribbonName = "Ribbon.xml";
-    private readonly string _ribbonPath = "Ribbons";
-    private XlApplication? _xlApp;
+    private ExcelApplication? _xlApp;
     private RibbonController? _ribbonController;
     /* 
      * ################################################################################################################################
@@ -45,7 +43,7 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
         Log.Information("Add-in is being loaded.");
 
         // Initialize the excel application object
-        _xlApp = application as XlApplication;
+        _xlApp = application as ExcelApplication;
 
         if (_xlApp == null)
         {
@@ -54,7 +52,7 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
         }
 
         // RibbonController is used to manage the custom ribbon UI
-        _ribbonController = new RibbonController(_xlApp);
+        _ribbonController = new RibbonController(_xlApp, "Ribbon.xml");
     }
 
     public void OnDisconnection(ext_DisconnectMode removeMode, ref Array custom)
