@@ -17,8 +17,6 @@ namespace HcExcelAddIn;
 [ProgId(ContractGuids.ProgId)]
 public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPaneConsumer
 {
-    private readonly string _ribbonName = "Ribbon.xml";
-    private readonly string _ribbonPath = "Ribbons";
     private XlApplication? _xlApp;
     private RibbonController? _ribbonController;
     /* 
@@ -54,7 +52,7 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
         }
 
         // RibbonController is used to manage the custom ribbon UI
-        _ribbonController = new RibbonController(_xlApp);
+        _ribbonController = new RibbonController(_xlApp, "Ribbon.xml");
     }
 
     public void OnDisconnection(ext_DisconnectMode removeMode, ref Array custom)

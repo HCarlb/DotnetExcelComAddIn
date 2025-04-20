@@ -5,5 +5,4 @@ global using System.Collections.Generic;
 //global using System.Threading.Tasks;
 global using Serilog;
 global using Serilog.Events;
-global using HcExcelAddIn.Extensions;
 global using COMContract;

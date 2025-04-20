@@ -7,7 +7,7 @@ internal static class Configuration
     internal static ILogger ConfigureLogger()
     {
         var folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? $"logs";
-        var logFilePath = Path.Combine(folder, "log-.txt");
+        var logFilePath = Path.Combine(folder, "Addin-.log");
 
         var logger = new LoggerConfiguration()
             .MinimumLevel.Debug() // Change to Information or Warning in production
