@@ -2,7 +2,7 @@
 using Microsoft.Office.Core;
 using Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
-using XlApplication = Microsoft.Office.Interop.Excel.Application;
+using ExcelApplication = Microsoft.Office.Interop.Excel.Application;
 
 // Project references required:
 // Nuget Packages: stdole (from Microsoft)
@@ -17,7 +17,7 @@ namespace HcExcelAddIn;
 [ProgId(ContractGuids.ProgId)]
 public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPaneConsumer
 {
-    private XlApplication? _xlApp;
+    private ExcelApplication? _xlApp;
     private RibbonController? _ribbonController;
     /* 
      * ################################################################################################################################
@@ -43,7 +43,7 @@ public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPane
         Log.Information("Add-in is being loaded.");
 
         // Initialize the excel application object
-        _xlApp = application as XlApplication;
+        _xlApp = application as ExcelApplication;
 
         if (_xlApp == null)
         {
