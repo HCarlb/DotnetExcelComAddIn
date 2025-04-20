@@ -15,7 +15,7 @@ namespace HcExcelAddIn;
 [ComVisible(true)]
 [Guid(ContractGuids.Guid)]
 [ProgId(ContractGuids.ProgId)]
-public class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPaneConsumer
+public sealed class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPaneConsumer
 {
     private ExcelApplication? _xlApp;
     private RibbonController? _ribbonController;
