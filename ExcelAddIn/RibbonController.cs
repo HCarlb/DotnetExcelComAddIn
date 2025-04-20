@@ -31,7 +31,9 @@ internal sealed class RibbonController(XlApplication xlApp, string ribbonName) :
         switch (control.Id)
         {
             case "button1":
-                MessageBox.Show("Button 1 clicked!", "Ribbon Button Clicked", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //MessageBox.Show("Button 1 clicked!", "Ribbon Button Clicked", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                var x = new MainView();
+                x.Show();
                 break;
             default:
                 Log.Warning("Unknown control ID: {0}", control.Id);
