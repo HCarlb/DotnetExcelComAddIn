@@ -1,14 +1,11 @@
 ﻿using Extensibility;
 using Microsoft.Office.Core;
-using Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
-using ExcelApplication = Microsoft.Office.Interop.Excel.Application;
 
 // Project references required:
 // Nuget Packages: stdole (from Microsoft)
 // COM-reference: Interop.Microsoft.Office.Interop.Excel from Microsoft Excel 16.0 Object Library
 // COM-reference: Microsoft.Office.Core from Microsoft Office 16.0 Object Library
-
 
 namespace HcExcelAddIn;
 
@@ -18,74 +15,54 @@ namespace HcExcelAddIn;
 public sealed class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomTaskPaneConsumer
 {
     private ExcelApplication? _xlApp;
-    private RibbonController? _ribbonController;
+    private IRibbonController? _ribbonController;
+    private IServiceProvider? _serviceProvider;
+    private ILogger? _logger;
+
     /* 
-     * ################################################################################################################################
-     * 
-     * Connect() 
-     * { 
-     *      // Warning!!!! The constructor seem to make the addon not load in Excel.
-     *      // Do not use(for now)!!!!! 
-     * }  
-     * ################################################################################################################################
+    * ################################################################################################################################
+    * 
+    * Connect() 
+    * { 
+    *      // Warning!!!! The constructor seem to make the addon not load in Excel.
+    *      // Do not use(for now)!!!!! 
+    * }  
+    * ################################################################################################################################
     */
 
-    public void OnBeginShutdown(ref Array custom)
-    {
-        Log.Information("Add-in is being unloaded.");
-        Log.CloseAndFlush();
-    }
+    public void OnBeginShutdown(ref Array custom) { }
 
     public void OnConnection(object application, ext_ConnectMode connectMode, object addInInst, ref Array custom)
     {
-        // Setup Logging
-        Log.Logger = Configuration.ConfigureLogger();
-        Log.Information("Add-in is being loaded.");
-
         // Initialize the excel application object
         _xlApp = application as ExcelApplication;
+        if (_xlApp == null) return;
 
-        if (_xlApp == null)
-        {
-            Log.Error("Application object is not initialized.");
-            return;
-        }
-
-        // RibbonController is used to manage the custom ribbon UI
-        _ribbonController = new RibbonController(_xlApp, "Ribbon.xml");
+        _serviceProvider = Configuration.ConfigureServices(_xlApp);
+        _logger = _serviceProvider.GetService<ILogger>();
+        _ribbonController = _serviceProvider.GetService<IRibbonController>();
     }
 
     public void OnDisconnection(ext_DisconnectMode removeMode, ref Array custom)
     {
-        Log.Debug("Add-in is being unloaded.");
-
         // Clean up
-        if (_ribbonController is IDisposable d) d.Dispose();
         _ribbonController = null;
         _xlApp = null;
     }
 
     public void OnStartupComplete(ref Array custom)
     {
-        Log.Debug("Greeting the user with Hello World!");
         _xlApp!.ActiveSheet.Cells[1, 1].Value = "Hello, World!";
-        
-        Log.Information("Add-in has finished loading.");
     }
 
-    public void OnAddInsUpdate(ref Array custom)
-    {
-        Log.Debug("Add-in has been updated.");
-    }
+    public void OnAddInsUpdate(ref Array custom) {}
 
-    public void CTPFactoryAvailable(ICTPFactory CTPFactoryInst)
-    {
-        Log.Debug("CTPFactory available.");
-    }
+    public void CTPFactoryAvailable(ICTPFactory CTPFactoryInst) { }
 
     #region RibbonController
     public string GetCustomUI(string RibbonID) => _ribbonController?.GetCustomUI(RibbonID) ?? string.Empty;
     public void OnRibbonLoaded(IRibbonUI ribbonUI) => _ribbonController?.OnLoaded(ribbonUI);
     public void OnAction(IRibbonControl control) => _ribbonController?.OnAction(control);
+
     #endregion RibbonController
 }
