@@ -30,8 +30,6 @@ public sealed class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomT
     * ################################################################################################################################
     */
 
-    public void OnBeginShutdown(ref Array custom) { }
-
     public void OnConnection(object application, ext_ConnectMode connectMode, object addInInst, ref Array custom)
     {
         // Initialize the excel application object
@@ -52,11 +50,12 @@ public sealed class Connect : IDTExtensibility2 , IRibbonExtensibility, ICustomT
 
     public void OnStartupComplete(ref Array custom)
     {
-        _xlApp!.ActiveSheet.Cells[1, 1].Value = "Hello, World!";
+        if (_xlApp == null) return;
+        _xlApp.ActiveSheet.Cells[1, 1].Value = "Hello, World!";
     }
 
     public void OnAddInsUpdate(ref Array custom) {}
-
+    public void OnBeginShutdown(ref Array custom) { }
     public void CTPFactoryAvailable(ICTPFactory CTPFactoryInst) { }
 
     #region RibbonController
