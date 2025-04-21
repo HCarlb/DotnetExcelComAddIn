@@ -5,11 +5,8 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Platforms>x86;x64</Platforms>
   </PropertyGroup>
-
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="xcopy $(TargetDir)\Register.* ..\ExcelAddIn\bin\Debug\net8.0-windows\ /Y" />
-	</Target>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\COMContract\COMContract.csproj" />

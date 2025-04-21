@@ -7,7 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	<EnableComHosting>true</EnableComHosting>
-	<PlatformTarget>x64</PlatformTarget>
+	<!--<PlatformTarget>x64</PlatformTarget>-->
+	<Platforms>x86;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
